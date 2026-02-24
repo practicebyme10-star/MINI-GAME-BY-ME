@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Infinite Maths Quiz</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(120deg,#89f7fe,#66a6ff);
+      margin: 0;
+      padding: 0;
+    }
+    .box {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    h1 { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>🧠 Infinite Maths Quiz</h1>
+  <h2 id="question">Loading...</h2>
+  <input type="number" id="answer" placeholder="Your Answer">
+  <br>
+  <button onclick="checkAnswer()">Submit</button>
+
+  <p>⭐ Score: <span id="score">0</span></p>
+  <p>🔥 Streak: <span id="streak">0</span></p>
+  <p>🎯 Level: <span id="level">Easy</span></p>
+</div>
+
+<script>
+let score = 0;
+let streak = 0;
+let difficulty = 1; // 1=Easy, 2=Medium, 3=Hard
+let correctAnswer = 0;
+
+function generateQuestion() {
+  let num1, num2, op;
+  
+  if (difficulty === 1) {
+    num1 = Math.floor(Math.random() * 10) + 1;
+    num2 = Math.floor(Math.random() * 10) + 1;
+    op = ["+","-"][Math.floor(Math.random()*2)];
+  } 
+  else if (difficulty === 2) {
+    num1 = Math.floor(Math.random() * 50) + 10;
+    num2 = Math.floor(Math.random() * 50) + 10;
+    op = ["+","-","*"][Math.floor(Math.random()*3)];
+  } 
+  else {
+    num1 = Math.floor(Math.random() * 100) + 20;
+    num2 = Math.floor(Math.random() * 50) + 1;
+    op = ["+","-","*","/"][Math.floor(Math.random()*4)];
+  }
+
+  if(op==="/") {
+    correctAnswer = Math.floor(num1 / num2);
+    document.getElementById("question").innerText = 
+      `What is ${num1} ÷ ${num2} (floor)?`;
+  } else if(op==="+") {
+    correctAnswer = num1 + num2;
+    document.getElementById("question").innerText = 
+      `What is ${num1} + ${num2}?`;
+  } else if(op==="-") {
+    correctAnswer = num1 - num2;
+    document.getElementById("question").innerText = 
+      `What is ${num1} - ${num2}?`;
+  } else {
+    correctAnswer = num1 * num2;
+    document.getElementById("question").innerText = 
+      `What is ${num1} × ${num2}?`;
+  }
+
+  document.getElementById("answer").value = "";
+}
+
+function updateLevel() {
+  if (difficulty === 1) document.getElementById("level").innerText = "Easy";
+  if (difficulty === 2) document.getElementById("level").innerText = "Medium";
+  if (difficulty === 3) document.getElementById("level").innerText = "Hard";
+}
+
+function checkAnswer() {
+  let userAns = Number(document.getElementById("answer").value);
+
+  if (userAns === correctAnswer) {
+    score++;
+    streak++;
+    alert("✅ Correct!");
+    
+    if (streak % 3 === 0 && difficulty < 3) {
+      difficulty++; // increase toughness like student improving
+    }
+
+  } else {
+    alert(`❌ Wrong! Correct answer was ${correctAnswer}`);
+    streak = 0;
+    if (difficulty > 1) difficulty--; // decrease if struggling
+  }
+
+  document.getElementById("score").innerText = score;
+  document.getElementById("streak").innerText = streak;
+  updateLevel();
+  generateQuestion();
+}
+
+generateQuestion();
+updateLevel();
+</script>
+
+</body>
+</html>
